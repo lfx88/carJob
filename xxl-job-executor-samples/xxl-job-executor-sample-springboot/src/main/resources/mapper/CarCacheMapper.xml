@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lfx.job.executor.dao.CarCacheDao">
+    <resultMap id="resMap" type="com.lfx.job.executor.entity.CarCache">
+        <result property="id" column="id"/>
+        <result property="type" column="type"/>
+        <result property="cache" column="cache"/>
+        <result property="key" column="key"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="weight" column="weight"/>
+        <result property="version" column="version"/>
+    </resultMap>
+    <select id="query" resultMap="resMap">
+        select * from fa_car_cache
+        <where>
+            <if test="key!=null">
+                and `key`= #{key}
+            </if>
+            <if test="id!=null">
+                and  id= #{id}
+            </if>
+            <if test="type!=null">
+                and `type`= #{type}
+            </if>
+            <if test="cache!=null">
+                and cache= #{cache}
+            </if>
+            <if test="updateTime!=null">
+                and update_time= #{updateTime}
+            </if>
+            <if test="weight!=null">
+                and weight= #{weight}
+            </if>
+        </where>
+    </select>
+    <insert id="add" parameterType="com.lfx.job.executor.entity.CarCache">
+        insert into fa_car_cache values (null,#{cache},#{type},#{updateTime},#{key},#{weight},#{version});
+    </insert>
+    <update id="update" parameterType="com.lfx.job.executor.entity.CarCache">
+        update fa_car_cache
+        <set>
+            <if test="cache!=null">
+                cache= #{cache},
+            </if>
+            <if test="type!=null">
+                `type`= #{type},
+            </if>
+            <if test="updateTime!=null">
+                update_time= #{updateTime},
+            </if>
+            <if test="key!=null">
+                `key`= #{key},
+            </if>
+            <if test="weight!=null">
+                weight= #{weight},
+            </if>
+            <if test="version!=null">
+                version= #{version},
+            </if>
+        </set>
+        <where>
+            <if test="id!=null">
+                id= #{id}
+            </if>
+        </where>
+    </update>
+
+    <delete id="deleteType">
+        delete from fa_car_cache where type=#{type}
+    </delete>
+
+
+    <insert id="insertAll" parameterType="com.lfx.job.executor.entity.CarCache">
+
+            insert into fa_car_cache values
+        <foreach collection="list" item="item" separator="," index="index">
+            (null,#{item.cache},#{item.type},#{item.updateTime},#{item.key},#{item.weight},#{item.version})
+        </foreach>
+    </insert>
+</mapper>

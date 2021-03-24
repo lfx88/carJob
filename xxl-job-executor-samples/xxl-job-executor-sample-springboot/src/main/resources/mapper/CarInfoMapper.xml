@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lfx.job.executor.dao.CarInfoDao">
+    <resultMap id="resMap" type="com.lfx.job.executor.entity.CarMakeDescriptionChinese">
+        <result property="id" column="id"/>
+        <result property="MakeDescriptionChinese" column="MakeDescriptionChinese"/>
+        <result property="pinyin" column="pinyin"/>
+    </resultMap>
+    <select id="query" resultMap="resMap">
+        select id,MakeDescriptionChinese,(select UPPER((select SUBSTRING(pinyin,1,1)))) as pinyin from fa_car_info where MakeDescriptionChinese != "" and pinyin != "" group by pinyin order by pinyin
+    </select>
+
+    <resultMap id="series" type="com.lfx.job.executor.entity.CarSeries">
+        <result property="NewMakeDescriptionChinese" column="NewMakeDescriptionChinese"/>
+        <result property="MakeDescriptionChinese" column="MakeDescriptionChinese"/>
+        <result property="FamilyDescriptionChinese" column="FamilyDescriptionChinese"/>
+    </resultMap>
+    <select id="querySeries" resultMap="series" parameterType="java.lang.String">
+        select * from fa_car_info where MakeDescriptionChinese = #{makeDescriptionChinese}
+    </select>
+    <select id="getAll" resultType="com.lfx.job.executor.entity.CarInfoDetail">
+        select
+        MakeDescriptionChinese as makeDescriptionChinese,
+        NewMakeDescriptionChinese as newMakeDescriptionChinese,
+        FamilyDescriptionChinese as familyDescriptionChinese,
+        NewPrice as newPrice,
+        id as id,
+        `year` as `year`,
+        `month` as `month`,
+        DescriptionCH as `desc`,
+        CONCAT(CONCAT(CONCAT(CONCAT(SeriesChinese,MakeDescriptionChinese),FamilyDescriptionChinese),Badge),GearTypeDescriptionChinese) as info,
+        SeriesChinese as letter
+        from fa_car_info group by VehicleKey,DescriptionCH order by SeriesChinese DESC, `year`,`month`
+    </select>
+</mapper>
